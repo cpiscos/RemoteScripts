@@ -1,0 +1,4 @@
+if ! screen -list | grep -q "tormove"; then
+   screen -dmS tormove ~/scripts/move
+fi
+

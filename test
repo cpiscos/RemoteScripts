@@ -1,0 +1,7 @@
+torrentid=371768650711f73daf17849ce4a7359c1e1c1d55
+if grep -Fxq $torrentid /media/sdx1/cpiscos/private/deluge/ids
+then
+	echo found
+else
+	echo not found
+fi

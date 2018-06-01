@@ -1,0 +1,40 @@
+#!/bin/bash
+COUNTER=0
+PIDFILE=/media/sdx1/cpiscos/scripts/backup.pid
+while [  $COUNTER -eq 0 ]; do
+if [ -f $PIDFILE ]
+then
+  PID=$(cat $PIDFILE)
+  ps -p $PID > /dev/null 2>&1
+  if [ $? -eq 0 ]
+  then
+    echo "Process already running"
+    exit
+  else
+    ## Process not found assume not running
+    echo $$ > $PIDFILE
+    if [ $? -ne 0 ]
+    then
+      echo "Could not create PID file"
+      exit
+    fi
+    let COUNTER=1
+  fi
+else
+  echo $$ > $PIDFILE
+  if [ $? -ne 0 ]
+  then
+    echo "Could not create PID file"
+    exit
+  fi
+  let COUNTER=1
+fi
+done
+
+echo "running"
+
+/media/sdx1/cpiscos/bin/rclone -v sync --checkers=100 --transfers=15 gsuites: backup:main
+
+rm $PIDFILE
+
+exit

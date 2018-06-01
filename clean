@@ -1,0 +1,1 @@
+find /media/sdx1/cpiscos/private/rtorrent/data -type d -exec bash -c "cd '{}' && pwd && ~/scripts/.clean" \;

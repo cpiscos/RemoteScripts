@@ -1,0 +1,41 @@
+cd /media/sdx1/cpiscos/private/deluge/data/complete
+for i in *
+do
+[ -d "$i" ] 
+if [ "$i" = "*" ]; then
+echo complete: Empty
+else 
+	if grep -q "$i $(date +%Y-%m-%d)" /media/sdx1/cpiscos/private/deluge/ids
+	then
+		echo id found in ids file
+	else
+		echo "$i $(date +%Y-%m-%d)"
+		echo ""$i" $(date +%Y-%m-%d)" >> /media/sdx1/cpiscos/private/deluge/ids
+		zip -r -0 "$i.zip" "$i"
+		if [ -f "$i.zip" ]; then
+			rm -rf "$i"
+		fi
+	fi
+fi
+done
+
+find /media/sdx1/cpiscos/private/deluge/data/complete -maxdepth 1 -type f -name "*.*" -exec mv {} /media/sdx1/cpiscos/private/deluge/move \;
+
+if [ -z "$(ls -A /media/sdx1/cpiscos/private/deluge/data/complete)" ]; then
+   echo "complete: Empty"
+   if [ -z "$(ls -A /media/sdx1/cpiscos/private/deluge/move)" ]; then
+      echo "move: Empty"
+   else
+      echo "move: Not Empty"
+      if ! screen -list | grep -q "dmove"; then
+      screen -dmS dmove rclone -v move /media/sdx1/cpiscos/private/deluge/move gsuites:Downloads/deluge
+      fi
+   fi
+else
+   echo "complete: Not Empty"
+fi
+
+if ! screen -list | grep -q "loop"; then
+        screen -dmS loop ~/scripts/loop
+fi
+

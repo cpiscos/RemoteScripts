@@ -1,0 +1,6 @@
+while true
+do
+   ~/scripts/zip >> ~/deluger.log
+   ~/scripts/torrents.sh
+   sleep 30s
+done
